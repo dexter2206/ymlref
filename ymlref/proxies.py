@@ -8,6 +8,7 @@ from jsonpointer import resolve_pointer
 
 
 class ProxyBase:
+    """Base class for concrete proxies."""
 
     def __init__(self, wrapped, root_doc=None):
         self._wrapped = wrapped
@@ -18,12 +19,31 @@ class ProxyBase:
         return len(self._wrapped)
 
     def resolve_ref(self, ref):
+        """Resolve given reference using this proxy's root document.
+
+        :param ref: JSON reference string.
+        :type ref: str
+        :returns: proxy or concrete object, depending on which part of the document is referenced
+         by the pointer.
+        :rtype: object.
+        """
         if ref.startswith('#'):
             return resolve_pointer(self.root_doc, ref[1:])
-        else:
-            return resolve_pointer(self.root_doc, ref[1:])
+        return resolve_pointer(self.root_doc, ref[1:])
 
     def extract_item(self, index):
+        """Extract top level item from document wrapped by this proxy.
+
+        Note that this is generic method, it applies both to MappingProxy and SequenceProxy.
+        It gets item from underlying object and, depending on its type, return either next
+        proxy, or some other object present in document (i.e. int, str etc.).
+
+        :param index: index of the element. Depending on the concrete implementation, this might
+         be key to the dictionary or list index.
+        :type index: arbitrary.
+        :returns: item of the given index.
+        :rtype: dependent on the type of the underlying item.
+        """
         value = self._wrapped[index]
         if isinstance(value, Mapping):
             if '$ref' in value:
@@ -57,7 +77,9 @@ class MappingProxy(ProxyBase, Mapping):
         return True
 
 
-class SequenceProxy(ProxyBase, Sequence):
+# It seems that Sequence class has a lot of ancestors and pylint does not like it
+# We are deliberately disabling this warning only here.
+class SequenceProxy(ProxyBase, Sequence): # pylint: disable=too-many-ancestors
     """Proxy wrapping Sequence object."""
 
     def __getitem__(self, idx):

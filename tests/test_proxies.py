@@ -18,8 +18,8 @@ INNER_REF_DICT = {
         'person': {'name': 'string', 'age': 'number'},
         'pet': {'petId': 'number', 'name': 'string'}
     },
-    'foo': { '$ref': '#/components/pet' },
-    'bar': { '$ref': '#/components/person/age' },
+    'foo': {'$ref': '#/components/pet'},
+    'bar': {'$ref': '#/components/person/age'},
     'baz': [0, 1, {'$ref': '#/components/person'}]
 }
 

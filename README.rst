@@ -32,12 +32,12 @@ Usage example
 	  $ref: "#/authors/dostoevsky"
    """
 
-doc = ymlref.loads(DOCUMENT)
-print('Books in document: \n')
-for book in doc['books']:
-    print(book['title'])
-    print('Author: ' + book['author']['first_name'] + ' ' + book['author']['last_name'])
-    print('---')
+   doc = ymlref.loads(DOCUMENT)
+   print('Books in document: \n')
+   for book in doc['books']:
+       print(book['title'])
+       print('Author: ' + book['author']['first_name'] + ' ' + book['author']['last_name'])
+       print('---')
 
 Exposed API
 ----------------

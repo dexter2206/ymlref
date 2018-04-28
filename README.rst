@@ -11,26 +11,26 @@ Usage example
 
 .. code:: python
 
-import ymlref
+   import ymlref
 
 
-DOCUMENT = """
+   DOCUMENT = """
 
-authors:
-  shakespear:
-    first_name: William
-    last_name: Shakespear
-  dostoevsky:
-    first_name: Fyodor
-    last_name: Dostoevsky
-books:
-   - title: Makbet
-     author:
-       $ref: "#/authors/shakespear"
-   - title: Crime and punishment
-     author:
-       $ref: "#/authors/dostoevsky"
-"""
+   authors:
+     shakespear:
+       first_name: William
+       last_name: Shakespear
+     dostoevsky:
+       first_name: Fyodor
+       last_name: Dostoevsky
+   books:
+      - title: Makbet
+	author:
+	  $ref: "#/authors/shakespear"
+      - title: Crime and punishment
+	author:
+	  $ref: "#/authors/dostoevsky"
+   """
 
 doc = ymlref.loads(DOCUMENT)
 print('Books in document: \n')

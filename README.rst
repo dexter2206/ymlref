@@ -1,7 +1,7 @@
 ymlref: load Yaml documents with possibility to resolve references.
 ==========================================================================
 
-|License: MIT| |Build Status| |Documentation Status| |codecov|
+|License: MIT|
 
 **ymlref** is a library that allows you to load Yaml documents and resolve JSON-pointer references
 inside them.

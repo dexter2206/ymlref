@@ -1,4 +1,4 @@
-"""ymlref: load YML documents with possibility to resolve references."""
+"""ymlref: load Yaml documents with possibility to resolve references."""
 
 from setuptools import setup, find_packages
 

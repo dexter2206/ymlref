@@ -1,4 +1,4 @@
-ymlref: ymlref: load YML documents with possibility to resolve references.
+ymlref: load Yaml documents with possibility to resolve references.
 ==========================================================================
 
 |License: MIT| |Build Status| |Documentation Status| |codecov|

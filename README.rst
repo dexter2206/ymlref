@@ -41,7 +41,7 @@ Usage example
 
 Exposed API
 ----------------
-**ymlref** provides two functions: **load** and **loads**. The first one loads document from file-like object, while the second one loads document fron `str` object.
+**ymlref** provides two functions: **load** and **loads**. The first one loads document from file-like object, while the second one loads document from `str` object.
 
 .. |License: MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg
    :target: https://opensource.org/licenses/MIT

@@ -35,6 +35,7 @@ FLATTENED_INNER_REF_DICT = {
 
 PLAIN_LIST = [0, 1.0, 'foobar']
 
+
 def test_plain_dict_access():
     """MappingProxy should allow accessing objects in wrapped plain dictionary using __getitem__."""
     proxy = MappingProxy(PLAIN_DICT)
@@ -93,3 +94,22 @@ def test_ref_access():
     assert proxy['foo'] == exp_foo, 'Should be able to extract whole dict object.'
     exp_baz = {'name': 'string', 'age': 'number'}
     assert proxy['baz'][2] == exp_baz, 'Should be able to extract object ref from list.'
+
+def test_get_existing():
+    """MappingProxy should support get method for existing elements."""
+    proxy = MappingProxy(INNER_REF_DICT)
+    expected = FLATTENED_INNER_REF_DICT['components']
+    assert expected == proxy.get('components'), 'Should get element.'
+
+def test_get_with_ref():
+    """The get method should also work for references."""
+    proxy = MappingProxy(INNER_REF_DICT)
+    pet = FLATTENED_INNER_REF_DICT['components']['pet']
+    assert pet  == proxy.get('foo'), 'Should get referenced object.'
+    assert 'number' == proxy.get('bar'), 'Should get referenced primitive value.'
+
+def test_get_with_default():
+    """MappingProxy should support getting default value if key is not present."""
+    proxy = MappingProxy(INNER_REF_DICT)
+    assert proxy.get('test123') is None, 'Default value for nonexisting key should be None.'
+    assert 'ddd' == proxy.get('test321', 'ddd'), 'Should use provided default value.'

@@ -58,6 +58,18 @@ class ProxyBase:
 class MappingProxy(ProxyBase, Mapping):
     """Proxy wrapping Mapping object."""
 
+    def get(self, key, default=None):
+        """Get given key, if present, otherwise return default value.
+
+        This behaves exactly like its `dict.get` counterpart.
+        """
+        if key in self:
+            return self[key]
+        return default
+
+    def __in__(self, key):
+        return key in self._wrapped
+
     def __getitem__(self, key):
         return self.extract_item(key)
 

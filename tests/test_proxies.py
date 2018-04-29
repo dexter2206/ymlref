@@ -36,12 +36,15 @@ FLATTENED_INNER_REF_DICT = {
 PLAIN_LIST = [0, 1.0, 'foobar']
 
 
+# In some of the following we are disabling pylint unsubscriptable-object error.
+# This is because in those cases they clearly fire false positives, but this
+# prevents pytest-pylint from passing
 def test_plain_dict_access():
     """MappingProxy should allow accessing objects in wrapped plain dictionary using __getitem__."""
     proxy = MappingProxy(PLAIN_DICT)
     assert proxy['foo'] == 'bar'
-    assert proxy['baz']['type'] == 'object'
-    assert proxy['baz']['number'] == 200
+    assert proxy['baz']['type'] == 'object' # pylint: disable=unsubscriptable-object
+    assert proxy['baz']['number'] == 200 # pylint: disable=unsubscriptable-object
 
 def test_plain_list_access():
     """SequenceProxy should allow accessing elements using __getitem__."""
@@ -93,6 +96,7 @@ def test_ref_access():
     exp_foo = {'petId': 'number', 'name': 'string'}
     assert proxy['foo'] == exp_foo, 'Should be able to extract whole dict object.'
     exp_baz = {'name': 'string', 'age': 'number'}
+    # pylint: disable=unsubscriptable-object
     assert proxy['baz'][2] == exp_baz, 'Should be able to extract object ref from list.'
 
 def test_get_existing():
@@ -105,11 +109,11 @@ def test_get_with_ref():
     """The get method should also work for references."""
     proxy = MappingProxy(INNER_REF_DICT)
     pet = FLATTENED_INNER_REF_DICT['components']['pet']
-    assert pet  == proxy.get('foo'), 'Should get referenced object.'
-    assert 'number' == proxy.get('bar'), 'Should get referenced primitive value.'
+    assert pet == proxy.get('foo'), 'Should get referenced object.'
+    assert proxy.get('bar') == 'number', 'Should get referenced primitive value.'
 
 def test_get_with_default():
     """MappingProxy should support getting default value if key is not present."""
     proxy = MappingProxy(INNER_REF_DICT)
     assert proxy.get('test123') is None, 'Default value for nonexisting key should be None.'
-    assert 'ddd' == proxy.get('test321', 'ddd'), 'Should use provided default value.'
+    assert proxy.get('test321', 'ddd') == 'ddd', 'Should use provided default value.'

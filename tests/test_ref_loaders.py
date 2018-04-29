@@ -1,6 +1,6 @@
 """Test cases for Resolvers."""
 from io import StringIO, BytesIO
-from jsonpointer import resolve_pointer
+import jsonpointer
 import pytest
 import yaml
 from ymlref.proxies import MappingProxy
@@ -23,19 +23,16 @@ bar:
     y: -10
 """
 
-def fun(*args, **kwargs):
-    print(args)
-    print(kwargs)
-    return yaml.load(*args, **kwargs)
-
 @pytest.fixture(name='load_yaml')
 def load_yaml_factory(mocker):
+    """Fixture providing mock wrapping yaml.load function."""
     return mocker.Mock(wraps=yaml.load)
 
 @pytest.fixture(name='resolve_pointer')
 def resolve_pointer_factory(mocker):
+    """Fixture mock patching resolve_pointer function used by ReferenceLoader."""
     return mocker.patch('ymlref.ref_loaders.resolve_pointer',
-                        mocker.Mock(wraps=resolve_pointer))
+                        mocker.Mock(wraps=jsonpointer.resolve_pointer))
 
 @pytest.fixture(name='stringio', scope='function')
 def stringio_factory(mocker):
@@ -71,7 +68,7 @@ def resolver_factory(open_local, open_remote, load_yaml):
                            load_yaml=load_yaml)
 
 @pytest.fixture(name='root_doc')
-def root_doc_factory(mocker):
+def root_doc_factory():
     """Fixture providing root document's mock."""
     root = MappingProxy(yaml.load(StringIO(DOCUMENT)))
     return root
@@ -103,6 +100,7 @@ def test_call_chain_remote_refs(ref_loader, root_doc, ref):
 
 @pytest.mark.parametrize('pointer,arg', [('#/foo', '/foo'), ('/foo', '/foo')])
 def test_uses_resolve_pointer(ref_loader, root_doc, pointer, arg, resolve_pointer):
+    """ReferenceLoader should use resolve pointer and load_yaml to access internal references."""
     content = ref_loader.load_ref(root_doc, pointer)
     resolve_pointer.assert_called_once_with(root_doc, arg)
     expected = {'bar': 'baz', 'test': 2, 'x': [0, 1, 2]}

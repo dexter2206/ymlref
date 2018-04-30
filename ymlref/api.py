@@ -4,7 +4,7 @@ import yaml
 from ymlref.proxies import MappingProxy
 
 
-def load(stream, raw_loader=yaml.load):
+def load(stream, ref_loader, raw_loader=yaml.load):
     """Load YAML docfrom a given stream.
 
     :param stream: file-like object to read a document from.
@@ -14,7 +14,7 @@ def load(stream, raw_loader=yaml.load):
     :type raw_loader: callable.
     :rtype: :py:class:`ymlref.proxies.MappingProxy`
     """
-    return MappingProxy(raw_loader(stream))
+    return MappingProxy(raw_loader(stream), ref_loader=ref_loader)
 
 def loads(document_str, raw_loader=yaml.load):
     """Load YAML doc from a given string.

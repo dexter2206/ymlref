@@ -68,9 +68,9 @@ def resolver_factory(open_local, open_remote, load_yaml):
                            load_yaml=load_yaml)
 
 @pytest.fixture(name='root_doc')
-def root_doc_factory():
+def root_doc_factory(ref_loader):
     """Fixture providing root document's mock."""
-    root = MappingProxy(yaml.load(StringIO(DOCUMENT)))
+    root = MappingProxy(yaml.load(StringIO(DOCUMENT)), ref_loader=ref_loader)
     return root
 
 def test_classifies_reference(ref_loader):

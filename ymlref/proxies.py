@@ -4,32 +4,18 @@ Those are read-only (immutable) objects that allow JSON reference resolving in t
 way.
 """
 from collections.abc import Mapping, Sequence
-from jsonpointer import resolve_pointer
 
 
 class ProxyBase:
     """Base class for concrete proxies."""
 
-    def __init__(self, wrapped, root_doc=None):
+    def __init__(self, wrapped, ref_loader, root_doc=None):
         self._wrapped = wrapped
+        self.ref_loader = ref_loader
         self.root_doc = root_doc if root_doc is not None else self
-
 
     def __len__(self):
         return len(self._wrapped)
-
-    def resolve_ref(self, ref):
-        """Resolve given reference using this proxy's root document.
-
-        :param ref: JSON reference string.
-        :type ref: str
-        :returns: proxy or concrete object, depending on which part of the document is referenced
-         by the pointer.
-        :rtype: object.
-        """
-        if ref.startswith('#'):
-            return resolve_pointer(self.root_doc, ref[1:])
-        return resolve_pointer(self.root_doc, ref[1:])
 
     def extract_item(self, index):
         """Extract top level item from document wrapped by this proxy.
@@ -47,13 +33,26 @@ class ProxyBase:
         value = self._wrapped[index]
         if isinstance(value, Mapping):
             if '$ref' in value:
-                return self.resolve_ref(value['$ref'])
-            return MappingProxy(value, self.root_doc)
-        elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-            return SequenceProxy(value, self.root_doc)
-        else:
-            return value
+                value = self.ref_loader.load_ref(self.root_doc, value['$ref'])
+        return self.wrap_object(value)
 
+    def wrap_object(self, obj):
+        """Wrap given object inside a proxy, if neccessary.
+
+        :param obj: object to wrap
+        :type obj: object
+        :returns: proxy wrapping `obj` or obj itself if it is not required to wrap
+         it. Objects that required wrapping are Mappings and Sequences, except
+         bytes and str, that are not yet proxies.
+        :rtype: Proxy or `type(obj)`
+        """
+        if isinstance(obj, ProxyBase):
+            return obj
+        if isinstance(obj, Mapping):
+            return MappingProxy(obj, self.ref_loader, self.root_doc)
+        elif isinstance(obj, Sequence) and not isinstance(obj, (str, bytes)):
+            return SequenceProxy(obj, self.ref_loader, self.root_doc)
+        return obj
 
 class MappingProxy(ProxyBase, Mapping):
     """Proxy wrapping Mapping object."""

@@ -38,12 +38,12 @@ def stream_factory():
     stream = StringIO(YML)
     return stream
 
-def test_load_yml(stream):
+def test_load_yml(stream, ref_loader):
     """The load function should read data from stream and construct correct proxy."""
-    doc = load(stream)
-    assert doc == MappingProxy(FLATTENED_DICT)
+    doc = load(stream, ref_loader)
+    assert doc == MappingProxy(FLATTENED_DICT, ref_loader=ref_loader)
 
-def test_loads_yml():
+def test_loads_yml(ref_loader):
     """The loads function should  construct correct proxy."""
-    doc = loads(YML)
-    assert doc == MappingProxy(FLATTENED_DICT)
+    doc = loads(YML, ref_loader)
+    assert doc == MappingProxy(FLATTENED_DICT, ref_loader=ref_loader)

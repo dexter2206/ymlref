@@ -2,8 +2,10 @@ language: python
 python:
 - '3.6'
 install:
-- pip install .[tests]
-script: pytest
+- pip install .
+script:
+  - pip install tox
+  - tox
 deploy:
   provider: pypi
   username: dexter2206

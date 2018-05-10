@@ -7,7 +7,7 @@ ymlref: load Yaml documents with possibility to resolve references.
 inside them.
 
 Usage example
------------
+-------------
 
 .. code:: python
 

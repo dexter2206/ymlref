@@ -25,6 +25,7 @@ setup(
     tests_require=['pytest', 'pytest-mock'],
     author='Konrad Jałowiecki <dexter2206@gmail.com>',
     author_email='dexter2206@gmail.com',
+    url="https://github.com/dexter2206/ymlref",
     packages=find_packages(exclude=['tests', 'tests.*', 'examples']),
     keywords='yml json jsonpointer'
 )
